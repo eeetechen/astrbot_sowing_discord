@@ -1,4 +1,10 @@
 {
+  "is_debug": {
+    "description": "是否调试",
+    "type": "bool",
+    "hint": "开启后将在控制台打印消息详细参数",
+    "default": false
+  },
   "banshi_depth": {
     "type": "int",
     "default": 4,
