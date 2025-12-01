@@ -31,16 +31,16 @@ class Sowing_Discord(Star):
 
         # 是否屏蔽文字聊天
         self.block_text_messages = config.get("block_text_messages", True)
-        logger.debug("加载 block_text_messages 配置: %b ",self.block_text_messages)
+
         # 是否搬运全部群聊
         self.ban_all_group = config.get("ban_all_group", False)
-        logger.debug("加载 ban_all_group 配置: " + self.ban_all_group)
+
         # 是否开启ai审核
         self.enable_ai = config.get("enable_ai", False)
-        logger.debug("加载 enable_ai 配置: " + self.enable_ai)
+
         # 是否开启debug模式
         self.is_debug = config.get("is_debug", False)
-        logger.debug("加载 is_debug 配置: " + self.is_debug)
+
 
         # 仍然读取配置中的 banshi_interval 以保持兼容，但实际冷却时将按时间段动态计算
         self.banshi_interval = config.get("banshi_interval", 3600)
