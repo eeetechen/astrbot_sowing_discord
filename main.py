@@ -92,13 +92,13 @@ class Sowing_Discord(Star):
     @filter.platform_adapter_type(PlatformAdapterType.AIOCQHTTP)
     async def handle_message(self, event: AstrMessageEvent):
         if self.is_debug:
-            logger.debug("now print messages: " + event.get_messages())
-            logger.debug("now print message_type: " + event.get_message_type())
-            logger.debug("now print raw_message: " + event.message_obj.raw_message())
+            logger.debug(f"now print messages: {event.get_messages()}")
+            logger.debug(f"now print message_type: " + {event.get_message_type()})
+            logger.debug(f"now print raw_message: " + {event.message_obj.raw_message()})
 
-            logger.info("now print messages: " + event.get_messages())
-            logger.info("now print message_type: " + event.get_message_type())
-            logger.info("now print raw_message: " + event.message_obj.raw_message())
+            logger.info(f"now print messages: " + {event.get_messages()})
+            logger.info(f"now print message_type: " + {event.get_message_type()})
+            logger.info(f"now print raw_message: " + {event.message_obj.raw_message()})
 
         forward_manager = ForwardManager(event)
         evaluator = Evaluator(event)
