@@ -41,7 +41,6 @@ class Sowing_Discord(Star):
         # 是否开启debug模式
         self.is_debug = config.get("is_debug", False)
 
-
         # 仍然读取配置中的 banshi_interval 以保持兼容，但实际冷却时将按时间段动态计算
         self.banshi_interval = config.get("banshi_interval", 3600)
         self.banshi_cache_seconds = config.get("banshi_cache_seconds", 3600)
@@ -93,12 +92,12 @@ class Sowing_Discord(Star):
     async def handle_message(self, event: AstrMessageEvent):
         if self.is_debug:
             logger.debug(f"now print messages: {event.get_messages()}")
-            logger.debug(f"now print message_type: " + {event.get_message_type()})
-            logger.debug(f"now print raw_message: " + {event.message_obj.raw_message()})
+            logger.debug(f"now print message_type: {event.get_message_type()}")
+            logger.debug(f"now print raw_message:  {event.message_obj.raw_message()}")
 
-            logger.info(f"now print messages: " + {event.get_messages()})
-            logger.info(f"now print message_type: " + {event.get_message_type()})
-            logger.info(f"now print raw_message: " + {event.message_obj.raw_message()})
+            logger.info(f"now print messages:  {event.get_messages()}")
+            logger.info(f"now print message_type:  {event.get_message_type()}")
+            logger.info(f"now print raw_message:  {event.message_obj.raw_message()}")
 
         forward_manager = ForwardManager(event)
         evaluator = Evaluator(event)
