@@ -31,7 +31,7 @@ class Sowing_Discord(Star):
 
         # 是否屏蔽文字聊天
         self.block_text_messages = config.get("block_text_messages", True)
-        logger.debug("加载 block_text_messages 配置: " + self.block_text_messages)
+        logger.debug("加载 block_text_messages 配置: %b ",self.block_text_messages)
         # 是否搬运全部群聊
         self.ban_all_group = config.get("ban_all_group", False)
         logger.debug("加载 ban_all_group 配置: " + self.ban_all_group)
