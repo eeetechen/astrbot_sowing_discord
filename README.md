@@ -1,3 +1,11 @@
+
+# 魔改自[Astrbot Sowing_discord](https://github.com/anka-afk/astrbot_sowing_discord)
+与原版不同的地方
+- ✅新增搬屎聊天记录嵌套层数限制配置项，原版为3，魔改版改为 0-8 大于8 默认8 小于等于0 不搬转发消息
+- ❎新增是否搬文字消息，配置项
+- ❎默认不搬消息到所有群，只搬配置群
+- ❎是否ai审核搬运消息
+
 # 🤖 Astrbot Sowing_discord 模块 - 搬史插件
 
 <div align="center">
@@ -13,9 +21,11 @@
 
 <div align="center">
 
-[![Moe Counter](https://count.getloli.com/get/@GalChat?theme=moebooru)](https://github.com/anka-afk/astrbot_sowing_discord)
+[![Moe Counter](https://count.getloli.com/get/@eatonShit?theme=moebooru)](https://github.com/eeetechen/astrbot_sowing_discord)
 
 </div>
+
+
 
 让 AI 学会搬史, 搬史进入新时代! 全自动搬史!
 
@@ -33,28 +43,8 @@
 
 如果您想加入群聊, 为项目做出贡献, 请添加:
 
-(New)分布页:
-https://ankaanka.me/sowing_discord_center/
-收藏发布页不迷路~
-
-所有群，包括聊天群（请在聊天群聊天）请从入口群加入，因为所有群基本都无法搜索了，入口群群简介有其他群链接和群号，入口群加入其他群后可以退出（或者你可以不加这个群，这个群将会永久禁言)。
-统一入口群:
-群号:1042784071
-链接:https://qm.qq.com/q/ujcPEV3d2o
-群聊的答案都是保证可以搜索的，&nbsp;你并不需要懂得答案的由来,&nbsp;你只是需要证明具有基础的搜索与解决问题的能力
-
-- 群聊的答案都是**保证可以搜索的**， 你并不需要懂得答案的由来, 你只是需要证明具有基础的搜索与解决问题的能力 
-
+并不存在的联系方式，你去找原作者吧
 注意, 不要相信任何你无法准确证明真实的消息, 这可能是谣言
-
-## ❓ 常见问题
-
-1. **Q: 为什么我的 bot 没有自动搬史?**
-
-   - A: 插件逻辑如下:
-     - 1. 插件会从指定的群聊(搬史源头)中获取消息, 并缓存消息
-     - 2. 10 分钟后, 插件会获取消息的贴表情信息, 如果满足评价条件(好史), 就会触发搬史
-     - 3. 因此你至少需要等待 10 分钟, 插件才会开始搬史
 
 ## ✨ 功能
 

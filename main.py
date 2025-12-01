@@ -19,7 +19,28 @@ class Sowing_Discord(Star):
     def __init__(self, context: Context, config: dict = None):
         super().__init__(context)
         self.instance_id = str(uuid.uuid4())[:8] 
-        
+
+        # 读取搬屎嵌套层数配置
+        if config.get("banshi_depth", 4) >= 8:
+            self.banshi_depth = 8
+        elif config.get("banshi_depth", 4) <= 0:
+            self.banshi_depth = 0
+        else:
+            self.banshi_depth = config.get("banshi_depth", 4)
+
+        # 是否屏蔽文字聊天
+        self.block_text_messages = config.get("block_text_messages", True)
+        logger.debug("加载 block_text_messages 配置: " + self.block_text_messages)
+        # 是否搬运全部群聊
+        self.ban_all_group = config.get("ban_all_group", False)
+        logger.debug("加载 ban_all_group 配置: " + self.ban_all_group)
+        # 是否开启ai审核
+        self.enable_ai = config.get("enable_ai", False)
+        logger.debug("加载 enable_ai 配置: " + self.enable_ai)
+        # 是否开启debug模式
+        self.is_debug = config.get("is_debug", False)
+        logger.debug("加载 is_debug 配置: " + self.is_debug)
+
         # 仍然读取配置中的 banshi_interval 以保持兼容，但实际冷却时将按时间段动态计算
         self.banshi_interval = config.get("banshi_interval", 3600) 
         self.banshi_cache_seconds = config.get("banshi_cache_seconds", 3600) 
@@ -68,6 +89,15 @@ class Sowing_Discord(Star):
 
     @filter.platform_adapter_type(PlatformAdapterType.AIOCQHTTP)
     async def handle_message(self, event:AstrMessageEvent):
+        if self.is_debug:
+            logger.debug("now print messages: " + event.get_messages())
+            logger.debug("now print message_type: " + event.get_message_type())
+            logger.debug("now print raw_message: " + event.message_obj.raw_message())
+
+            logger.info("now print messages: " + event.get_messages())
+            logger.info("now print message_type: " + event.get_message_type())
+            logger.info("now print raw_message: " + event.message_obj.raw_message())
+
         forward_manager = ForwardManager(event)
         evaluator = Evaluator(event)
         evaluator.add_rule(GoodEmojiRule())
@@ -77,9 +107,9 @@ class Sowing_Discord(Star):
         is_in_source_list = source_group_id in self.banshi_group_list
         
         sender_id = event.get_sender_id()
-
-        if not self.banshi_target_list:
-            self.banshi_target_list = await self.get_group_list(event)
+        if self.ban_all_group:
+            if not self.banshi_target_list:
+                self.banshi_target_list = await self.get_group_list(event)
             
         raw_message = event.message_obj.raw_message
         message_list = raw_message.get("message") if isinstance(raw_message, dict) else None
@@ -90,10 +120,12 @@ class Sowing_Discord(Star):
                     message_list[0].get("type") == "forward")
         
         if is_forward and is_in_source_list:
-            await self.local_cache.add_cache(msg_id)
-            logger.info(
-                f"[SowingDiscord][ID:{self.instance_id}] 任务：缓存。已缓存转发消息 (ID: {msg_id}, 源头群: {source_group_id}, 发送者: {sender_id})。"
-            )
+            if not self.block_text_messages and event.get_messages():
+
+                await self.local_cache.add_cache(msg_id)
+                logger.info(
+                    f"[SowingDiscord][ID:{self.instance_id}] 任务：缓存。已缓存转发消息 (ID: {msg_id}, 源头群: {source_group_id}, 发送者: {sender_id})。"
+                )
 
         waiting_messages = await self.local_cache.get_waiting_messages()
         

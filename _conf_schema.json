@@ -1,4 +1,15 @@
 {
+  "banshi_depth": {
+    "type": "int",
+    "default": 4,
+    "description": "搬史聊天记录最大深度, 默认4，小于0=0，大于8=8"
+  },
+  "block_text_messages": {
+    "description": "是否屏蔽文字聊天",
+    "type": "bool",
+    "hint": "开启后将不转发文字聊天，图片，视频，聊天记录正常转发",
+    "default": true
+  },
   "banshi_interval": {
     "type": "int",
     "default": 30,
@@ -34,15 +45,27 @@
     "default": ["1032915502"],
     "description": "史的来源群列表"
   },
+  "ban_all_group": {
+    "description": "是否搬运全部群聊",
+    "type": "bool",
+    "hint": "默认不搬全部群，只搬运到白名单内群聊",
+    "default": false
+  },
   "banshi_target_list": {
     "type": "list",
     "default": [],
-    "description": "白名单, 史的目标列表, 可以填写多个群或用户, 默认空白即全部群"
+    "description": "白名单, 史的目标列表, 可以填写多个群或用户"
   },
   "block_source_messages": {
     "description": "是否屏蔽源群消息",
     "type": "bool",
     "hint": "开启后将屏蔽banshi_group_list中的群消息",
     "default": true
+  },
+  "enable_ai": {
+    "description": "是否开启ai审核",
+    "type": "bool",
+    "hint": "考虑到ai并不是大众需求，给个开关不再审核",
+    "default": false
   }
 }
