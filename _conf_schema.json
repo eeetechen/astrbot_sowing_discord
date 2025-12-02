@@ -5,16 +5,47 @@
     "hint": "开启后将在控制台打印消息详细参数",
     "default": false
   },
+  "block": {
+    "description": "设置不搬什么内容的消息",
+    "hint": "默认不搬长度过短普通聊天发言，回复消息和@消息。其余视频，转发，图片，统统转发",
+    "type": "object",
+    "items": {
+      "text_message": {
+        "description": "是否屏蔽普通文字聊天",
+        "type": "bool",
+        "hint": "开启后将不转发文字聊天,但其实不是，文字长度大于86会被识别为发电文案，继续转发。相信我，我是品鉴专家",
+        "default": true
+      },
+      "picture_message": {
+        "description": "是否屏蔽图片聊天内容",
+        "type": "bool",
+        "hint": "开启后将不转发图片聊天",
+        "default": false
+      },
+      "video_message": {
+        "description": "是否屏蔽视频聊天内容",
+        "type": "bool",
+        "hint": "开启后将不转发视频聊天",
+        "default": false
+      },
+      "forward_message": {
+        "description": "是否屏蔽转发聊天内容",
+        "type": "bool",
+        "hint": "开启后将不转发合并转发聊天内容",
+        "default": false
+      },
+      "file_message": {
+        "description": "是否屏蔽转发文件聊天内容",
+        "type": "bool",
+        "hint": "开启后将不转发合并转发文件聊天内容",
+        "default": false
+      }
+    }
+  },
   "banshi_depth": {
     "type": "int",
     "default": 4,
     "description": "搬史聊天记录最大深度, 默认4，小于0=0，大于8=8"
-  },
-  "block_text_messages": {
-    "description": "是否屏蔽文字聊天",
-    "type": "bool",
-    "hint": "开启后将不转发文字聊天，图片，视频，聊天记录正常转发",
-    "default": true
   },
   "banshi_interval": {
     "type": "int",
@@ -48,7 +79,9 @@
   },
   "banshi_group_list": {
     "type": "list",
-    "default": ["1032915502"],
+    "default": [
+      "1032915502"
+    ],
     "description": "史的来源群列表"
   },
   "ban_all_group": {
@@ -75,3 +108,4 @@
     "default": false
   }
 }
+

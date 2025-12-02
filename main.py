@@ -1,9 +1,9 @@
-from astrbot.api.event import filter, AstrMessageEvent, MessageEventResult
-from astrbot.api.star import Context, Star, register
+from astrbot.api.event import filter
+
 from astrbot.api.all import *
 from astrbot.api import logger
 from aiocqhttp.exceptions import ActionFailed
-from astrbot.core.platform.sources.aiocqhttp.aiocqhttp_message_event import AiocqhttpMessageEvent
+
 from astrbot.core.star.filter.platform_adapter_type import PlatformAdapterType
 from .core.forward_manager import ForwardManager
 from .core.evaluation.evaluator import Evaluator
@@ -29,8 +29,7 @@ class Sowing_Discord(Star):
         else:
             self.banshi_depth = config.get("banshi_depth", 4)
 
-        # 是否屏蔽文字聊天
-        self.block_text_messages = config.get("block_text_messages", True)
+        self.block = config.get("block")
 
         # 是否搬运全部群聊
         self.ban_all_group = config.get("ban_all_group", False)
@@ -91,13 +90,8 @@ class Sowing_Discord(Star):
     @filter.platform_adapter_type(PlatformAdapterType.AIOCQHTTP)
     async def handle_message(self, event: AstrMessageEvent):
         if self.is_debug:
-            logger.debug(f"now print messages: {event.get_messages()}")
-            logger.debug(f"now print message_type: {event.get_message_type()}")
-            logger.debug(f"now print raw_message:  {event.message_obj.raw_message()}")
-
             logger.info(f"now print messages:  {event.get_messages()}")
-            logger.info(f"now print message_type:  {event.get_message_type()}")
-            logger.info(f"now print raw_message:  {event.message_obj.raw_message()}")
+            logger.info(f"now print raw_message:  {event.message_obj.raw_message}")
 
         forward_manager = ForwardManager(event)
         evaluator = Evaluator(event)
@@ -106,7 +100,6 @@ class Sowing_Discord(Star):
         source_group_id = event.message_obj.group_id
         msg_id = event.message_obj.message_id
         is_in_source_list = source_group_id in self.banshi_group_list
-
         sender_id = event.get_sender_id()
         if self.ban_all_group:
             if not self.banshi_target_list:
@@ -114,18 +107,48 @@ class Sowing_Discord(Star):
 
         raw_message = event.message_obj.raw_message
         message_list = raw_message.get("message") if isinstance(raw_message, dict) else None
-        is_forward = (message_list is not None and
-                      isinstance(message_list, list) and
-                      message_list and
-                      isinstance(message_list[0], dict) and
-                      message_list[0].get("type") == "forward")
+        # 安全获取第0个字段的值
+        if not (message_list is not None and isinstance(message_list, list) and message_list and isinstance(
+                message_list[0], dict)):
+            return None
 
-        if is_forward and is_in_source_list:
-            if not self.block_text_messages and event.get_messages():
-                await self.local_cache.add_cache(msg_id)
-                logger.info(
-                    f"[SowingDiscord][ID:{self.instance_id}] 任务：缓存。已缓存转发消息 (ID: {msg_id}, 源头群: {source_group_id}, 发送者: {sender_id})。"
-                )
+        # 处理纯文本消息
+        if message_list[0].get("type") == "text":
+            if self.block.get("text_message", True):
+
+                msg_str = message_list[0].get("data", {}).get("text")
+                if not isinstance(msg_str, str):
+                    return None
+
+                total_length = len(msg_str)  # 字符串总长度
+                newline_count = msg_str.count('\n')  # 换行符数量
+                valid_char_count = total_length - newline_count  # 有效字符数（排除换行符）
+                # 判断是否是屎 长度大于100 判定发电文案
+                # 总长度≤100 且 换行符<4 有效字符<15
+                if total_length <= 100 and (newline_count < 4 or valid_char_count < 20):
+                    return None
+
+        elif message_list[0].get("type") == "image":
+            if self.block.get("picture_message", False):
+                return None
+        elif message_list[0].get("type") == "video":
+            if self.block.get("video_message", False):
+                return None
+        elif message_list[0].get("type") == "forward":
+            if self.block.get("forward_messages", False):
+                return None
+        elif message_list[0].get("type") == "file":
+            if self.block.get("file_message", False):
+                return None
+        else:
+            return None
+
+
+        if is_in_source_list:
+            await self.local_cache.add_cache(msg_id)
+            logger.info(
+                f"[SowingDiscord][ID:{self.instance_id}] 任务：缓存。已缓存转发消息 (ID: {msg_id}, 源头群: {source_group_id}, 发送者: {sender_id})。"
+            )
 
         waiting_messages = await self.local_cache.get_waiting_messages()
 
@@ -254,7 +277,7 @@ class Sowing_Discord(Star):
         finally:
             self._forward_task = None
 
-    def terminate(self):
+    async def terminate(self):
         """在插件停止时，取消仍在进行的冷却任务，避免阻塞关闭。"""
         try:
             if self._forward_task and not self._forward_task.done():
