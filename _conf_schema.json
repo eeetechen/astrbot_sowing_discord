@@ -47,24 +47,19 @@
     "default": 4,
     "description": "搬史聊天记录最大深度, 默认4，小于0=0，大于8=8"
   },
-  "banshi_interval": {
-    "type": "int",
-    "default": 30,
-    "description": "搬史间隔, 单位: 秒"
-  },
   "banshi_cache_seconds": {
     "type": "int",
-    "default": 3600,
+    "default": 360,
     "description": "消息缓存时间限制, 也是转发前检查历史消息的时间窗口 (秒)"
   },
   "banshi_cooldown_day_seconds": {
     "type": "int",
-    "default": 600,
+    "default": 60,
     "description": "动态冷却：白天(09:00-01:00) 冷却秒数"
   },
   "banshi_cooldown_night_seconds": {
     "type": "int",
-    "default": 3600,
+    "default": 360,
     "description": "动态冷却：夜间(01:00-09:00) 冷却秒数"
   },
   "banshi_cooldown_day_start": {

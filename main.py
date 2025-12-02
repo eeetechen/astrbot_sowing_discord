@@ -41,11 +41,10 @@ class Sowing_Discord(Star):
         self.is_debug = config.get("is_debug", False)
 
         # 仍然读取配置中的 banshi_interval 以保持兼容，但实际冷却时将按时间段动态计算
-        self.banshi_interval = config.get("banshi_interval", 3600)
-        self.banshi_cache_seconds = config.get("banshi_cache_seconds", 3600)
+        self.banshi_cache_seconds = config.get("banshi_cache_seconds", 360)
         # 动态冷却配置（可自定义），默认：白天600s，夜间3600s
-        self.cooldown_day_seconds = config.get("banshi_cooldown_day_seconds", 600)
-        self.cooldown_night_seconds = config.get("banshi_cooldown_night_seconds", 3600)
+        self.cooldown_day_seconds = config.get("banshi_cooldown_day_seconds", 60)
+        self.cooldown_night_seconds = config.get("banshi_cooldown_night_seconds", 360)
         # 冷却时间段起始时间（可自定义），默认：白天09:00，夜间01:00
         self.cooldown_day_start_str = config.get("banshi_cooldown_day_start", "09:00")
         self.cooldown_night_start_str = config.get("banshi_cooldown_night_start", "01:00")
